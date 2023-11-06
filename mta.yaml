@@ -22,7 +22,7 @@ modules:
         properties:
           srv-url: ${default-url}
     requires:
-      - name: sap-cap-app-auth
+      - name: sap-cap-app-uaa
       - name: sap-cap-app-db
 
   - name: sap-cap-app-db-deployer
@@ -34,7 +34,7 @@ modules:
       - name: sap-cap-app-db
 
 resources:
-  - name: sap-cap-app-auth
+  - name: sap-cap-app-uaa
     type: org.cloudfoundry.managed-service
     parameters:
       service: xsuaa
@@ -43,6 +43,15 @@ resources:
       config:
         xsappname: sap-cap-app-${org}-${space}
         tenant-mode: dedicated
+        role-collections:
+         - name: 'RiskManager-${space}'
+           description: Manage Risks
+           role-template-references:
+             - $XSAPPNAME.RiskManager
+         - name: 'RiskViewer-${space}'
+           description: View Risks
+           role-template-references:
+             - $XSAPPNAME.RiskViewer
   - name: sap-cap-app-db
     type: com.sap.xs.hdi-container
     parameters:
