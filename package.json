@@ -20,5 +20,31 @@
   },
   "sapux": [
     "app/risks"
-  ]
+  ],
+  "cds": {
+    "requires": {
+      "[production]": {},
+      "[development]": {
+        "auth": {
+          "kind": "mocked",
+          "users": {
+            "risk.viewer@tester.sap.com": {
+              "password": "initial",
+              "ID": "risk.viewer@tester.sap.com",
+              "roles": [
+                "RiskViewer"
+              ]
+            },
+            "risk.manager@tester.sap.com": {
+              "password": "initial",
+              "ID": "risk.manager@tester.sap.com",
+              "roles": [
+                "RiskManager"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
 }
