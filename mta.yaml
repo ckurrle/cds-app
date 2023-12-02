@@ -1,5 +1,5 @@
-_schema-version: '3.1'
-ID: sap-cap-app
+_schema-version: "3.1"
+ID: cap-app
 version: 1.0.0
 description: "A simple CAP project."
 parameters:
@@ -10,7 +10,7 @@ build-parameters:
       commands:
         - npx cds build --production
 modules:
-  - name: sap-cap-app-srv
+  - name: cap-app-srv
     type: nodejs
     path: gen/srv
     parameters:
@@ -22,38 +22,88 @@ modules:
         properties:
           srv-url: ${default-url}
     requires:
-      - name: sap-cap-app-uaa
-      - name: sap-cap-app-db
+      - name: cap-app-uaa
+      - name: cap-app-db
 
-  - name: sap-cap-app-db-deployer
+  - name: cap-app-db-deployer
     type: hdb
     path: gen/db
     parameters:
       buildpack: nodejs_buildpack
     requires:
-      - name: sap-cap-app-db
+      - name: cap-app-db
+
+  - name: cap-app-destinations
+    type: com.sap.application.content
+    requires:
+      - name: cap-app-uaa
+        parameters:
+          service-key:
+            name: cap-app-uaa-key
+      - name: cap-app-html5-repo-host
+        parameters:
+          service-key:
+            name: cap-app-html5-repo-host-key
+      - name: srv-api
+      - name: cap-app-destination
+        parameters:
+          content-target: true
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Authentication: OAuth2UserTokenExchange
+              Name: cap-app-srv
+              TokenServiceInstanceName: cap-app-uaa
+              TokenServiceKeyName: cap-app-uaa-key
+              URL: "~{srv-api/srv-url}"
+              sap.cloud.service: cap-app.service
+            - Name: cap-app-html5-repo-host
+              ServiceInstanceName: cap-app-html5-repo-host
+              ServiceKeyName: cap-app-html5-repo-host-key
+              sap.cloud.service: cap-app.service
+            - Authentication: OAuth2UserTokenExchange
+              Name: cap-app-uaa
+              ServiceInstanceName: cap-app-uaa
+              ServiceKeyName: cap-app-uaa-key
+              sap.cloud.service: cap-app.service
+          existing_destinations_policy: update
+    build-parameters:
+      no-source: true
 
 resources:
-  - name: sap-cap-app-uaa
+  - name: cap-app-uaa
     type: org.cloudfoundry.managed-service
     parameters:
       service: xsuaa
       service-plan: application
       path: ./xs-security.json
       config:
-        xsappname: sap-cap-app-${org}-${space}
+        xsappname: cap-app-${org}-${space}
         tenant-mode: dedicated
         role-collections:
-         - name: 'RiskManager-${space}'
-           description: Manage Risks
-           role-template-references:
-             - $XSAPPNAME.RiskManager
-         - name: 'RiskViewer-${space}'
-           description: View Risks
-           role-template-references:
-             - $XSAPPNAME.RiskViewer
-  - name: sap-cap-app-db
+          - name: "RiskManager-${space}"
+            description: Manage Risks
+            role-template-references:
+              - $XSAPPNAME.RiskManager
+          - name: "RiskViewer-${space}"
+            description: View Risks
+            role-template-references:
+              - $XSAPPNAME.RiskViewer
+  - name: cap-app-db
     type: com.sap.xs.hdi-container
     parameters:
       service: hana
       service-plan: hdi-shared
+  - name: cap-app-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+  - name: cap-app-html5-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host

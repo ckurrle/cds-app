@@ -15,6 +15,18 @@
       "version": "1.11.3",
       "toolsId": "55270946-70fb-4ba6-ace3-040085866406"
     },
+    "crossNavigation": {
+      "inbounds": {
+        "Mitigations-display": {
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          },
+          "semanticObject": "Mitigations",
+          "action": "display"
+        }
+      }
+    },
     "dataSources": {
       "mainService": {
         "uri": "/odata/v4/service/risk/",
@@ -58,6 +70,10 @@
         "sap.ushell": {}
       }
     },
+    "sap.cloud": {
+      "public": true,
+      "service": "cap-app.service"
+    },
     "contentDensities": {
       "compact": true,
       "cozy": true
@@ -91,9 +107,7 @@
         "controlId": "app",
         "controlAggregation": "pages",
         "bypassed": {
-          "target": [
-            "notFound"
-          ]
+          "target": ["notFound"]
         },
         "async": true
       },
@@ -101,16 +115,12 @@
         {
           "pattern": "",
           "name": "worklist",
-          "target": [
-            "worklist"
-          ]
+          "target": ["worklist"]
         },
         {
           "pattern": "Mitigations/{objectId}",
           "name": "object",
-          "target": [
-            "object"
-          ]
+          "target": ["object"]
         }
       ],
       "targets": {

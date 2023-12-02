@@ -15,6 +15,18 @@
       "version": "1.11.3",
       "toolsId": "deaec180-202f-485a-a211-e1c339a0a283"
     },
+    "crossNavigation": {
+      "inbounds": {
+        "Risks-display": {
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          },
+          "semanticObject": "Risks",
+          "action": "display"
+        }
+      }
+    },
     "dataSources": {
       "mainService": {
         "uri": "/odata/v4/service/risk/",
@@ -53,6 +65,10 @@
         "sap.ushell": {},
         "sap.fe.templates": {}
       }
+    },
+    "sap.cloud": {
+      "public": true,
+      "service": "cap-app.service"
     },
     "contentDensities": {
       "compact": true,
